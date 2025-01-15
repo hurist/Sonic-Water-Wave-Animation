@@ -6,9 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -73,6 +76,7 @@ public class WaterWaveView extends View {
     private static final int DEFAULT_PROGRESS = 405;
     private static final int DEFAULT_MAX = 1000;
     private static final int DEFAULT_STRONG = 50;
+    private static final int DEFAULT_BACKGROUND_COLOR = Color.TRANSPARENT;
     public static final int DEFAULT_BEHIND_WAVE_COLOR = Color.parseColor("#90cbf9");
     public static final int DEFAULT_FRONT_WAVE_COLOR = Color.parseColor("#80c5fc");
     public static final int DEFAULT_BORDER_COLOR = Color.parseColor("#000000");
@@ -87,7 +91,10 @@ public class WaterWaveView extends View {
     private float mShapePadding = DEFAULT_PADDING; //Indentation
     private int mProgress = DEFAULT_PROGRESS; //Water level
     private int mMax = DEFAULT_MAX; //Maximum water level
-    private int mFrontWaveColor = DEFAULT_FRONT_WAVE_COLOR; //Front water wave color
+    private int mBackgroundColor = DEFAULT_BACKGROUND_COLOR; //Background color
+    private int mFrontWaveStartColor = DEFAULT_FRONT_WAVE_COLOR; //Front water wave color
+    private int mFrontWaveEndColor = DEFAULT_FRONT_WAVE_COLOR; //Front water wave color
+
     private int mBehindWaveColor = DEFAULT_BEHIND_WAVE_COLOR; //Back wave color
     private int mBorderColor = DEFAULT_BORDER_COLOR; //Edge color
     private float mBorderWidth = DEFAULT_BORDER_WIDTH; //Edge width
@@ -98,6 +105,9 @@ public class WaterWaveView extends View {
     private int mSpikes = DEFAULT_SPIKE_COUNT;
     private Shape mShape = Shape.CIRCLE;
     private OnWaveStuffListener mListener;
+    /**
+     * 当前控件的大小
+     */
     private Point screenSize = new Point(0, 0);
 
     public WaterWaveView(Context context) {
@@ -114,7 +124,9 @@ public class WaterWaveView extends View {
         TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularWaterWaveView, defStyleAttr, 0);
 
         /*Set xml parameters*/
-        mFrontWaveColor = attributes.getColor(R.styleable.CircularWaterWaveView_frontColor, DEFAULT_FRONT_WAVE_COLOR);
+        mBackgroundColor = attributes.getColor(R.styleable.CircularWaterWaveView_backgroundColor, DEFAULT_BACKGROUND_COLOR);
+        mFrontWaveStartColor = attributes.getColor(R.styleable.CircularWaterWaveView_frontStartColor, DEFAULT_FRONT_WAVE_COLOR);
+        mFrontWaveEndColor = attributes.getColor(R.styleable.CircularWaterWaveView_frontEndColor, DEFAULT_FRONT_WAVE_COLOR);
         mBehindWaveColor = attributes.getColor(R.styleable.CircularWaterWaveView_behideColor, DEFAULT_BEHIND_WAVE_COLOR);
         mBorderColor = attributes.getColor(R.styleable.CircularWaterWaveView_borderColor, DEFAULT_BORDER_COLOR);
         mTextColor = attributes.getColor(R.styleable.CircularWaterWaveView_textColor, DEFAULT_TEXT_COLOR);
@@ -141,7 +153,7 @@ public class WaterWaveView extends View {
         mWavePaint2 = new Paint();
         mWavePaint2.setStrokeWidth(2f);
         mWavePaint2.setAntiAlias(true);
-        mWavePaint2.setColor(mFrontWaveColor);
+        //mWavePaint2.setColor(mFrontWaveStartColor);
 
 
         /*Turn on animation thread*/
@@ -231,16 +243,6 @@ public class WaterWaveView extends View {
         message.sendToTarget();
     }
 
-    /**
-     * Set the front wave color
-     */
-    public void setFrontWaveColor(int color) {
-        mFrontWaveColor = color;
-        mWavePaint2.setColor(mFrontWaveColor);
-        createShader();
-        Message message = Message.obtain(uiHandler);
-        message.sendToTarget();
-    }
 
     /**
      * Set the color of the back wave
@@ -379,6 +381,7 @@ public class WaterWaveView extends View {
 
     private void resetShapes() {
         int radius = Math.min(screenSize.x, screenSize.y);
+        // cx, cy是绘制形状时的起始坐标，下面的计算会让形状始终位于长边的中间
         int cx = (screenSize.x - radius) / 2;
         int cy = (screenSize.y - radius) / 2;
 
@@ -425,8 +428,8 @@ public class WaterWaveView extends View {
             case GLASS:
                 int glassWidth = screenSize.x - (int) mShapePadding;
                 int glassHeight = screenSize.y - (int) mShapePadding;
-                mPathBorder = drawGlass(cx, cy, glassWidth, glassHeight);
-                mPathContent = drawGlass(cx + (int) mBorderWidth, cy + (int) mBorderWidth, glassWidth - 2 * (int) mBorderWidth, glassHeight - 2 * (int) mBorderWidth);
+                mPathBorder = drawGlassVer1(cx, cy, glassWidth, glassHeight);
+                mPathContent = drawGlassVer1(cx + (int) mBorderWidth, cy + (int) mBorderWidth, glassWidth - 2 * (int) mBorderWidth, glassHeight - 2 * (int) mBorderWidth);
                 break;
 
         }
@@ -551,6 +554,48 @@ public class WaterWaveView extends View {
         return path;
     }
 
+    private Path drawGlassVer1(int cx, int cy, int width, int height) {
+
+        Path path = new Path();
+        path.moveTo(369.072f, 0f);
+        path.cubicTo(398.524f, 0f, 422.569f, 23.149f, 424.005f, 52.244f);
+        path.cubicTo(455.021f, 52.780f, 480f, 78.091f, 480f, 109.235f);
+        path.lineTo(480f, 160.706f);
+        path.cubicTo(480f, 178.931f, 465.225f, 193.706f, 447f, 193.706f);
+        path.lineTo(443.778f, 193.705f);
+        path.lineTo(401.312f, 542.763f);
+        path.cubicTo(397.893f, 570.868f, 374.034f, 592f, 345.722f, 592f);
+        path.lineTo(134.278f, 592f);
+        path.cubicTo(105.966f, 592f, 82.107f, 570.868f, 78.688f, 542.763f);
+        path.lineTo(36.221f, 193.705f);
+        path.lineTo(33f, 193.706f);
+        path.cubicTo(14.775f, 193.706f, 0f, 178.931f, 0f, 160.706f);
+        path.lineTo(0f, 109.235f);
+        path.cubicTo(0f, 78.091f, 24.979f, 52.780f, 55.995f, 52.244f);
+        path.cubicTo(57.431f, 23.149f, 81.476f, 0f, 110.928f, 0f);
+        path.lineTo(369.072f, 0f);
+        path.close();
+
+
+        RectF validRect = new RectF();
+        validRect.set(
+                cx,
+                cy,
+                cx + width,
+                cy + height
+        );
+
+        RectF pathBounds = new RectF();
+        // 让path强制填充到指定的矩形区域
+        path.computeBounds(pathBounds, true);
+        Matrix matrix = new Matrix();
+        // 计算缩放比例
+        matrix.setRectToRect(pathBounds, validRect, Matrix.ScaleToFit.CENTER); // 映射矩阵
+        path.transform(matrix); // 应用变换
+
+        return path;
+    }
+
 
     /**
      * Create a fill shader
@@ -573,6 +618,7 @@ public class WaterWaveView extends View {
         /*Build the canvas*/
         Bitmap bitmap = Bitmap.createBitmap(viewSize, viewSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(mBackgroundColor);
 
         float level = ((((float) (mMax - mProgress)) / (float) mMax) * viewSize) + ((screenSize.y / 2) - (viewSize / 2)); //Height of water level
         int x2 = viewSize + 1;//width
@@ -581,16 +627,26 @@ public class WaterWaveView extends View {
         float shiftX2 = shiftX1 + zzz; //The difference between the front and rear waves
         int waveLevel = mStrong * (viewSize / 20) / 100;  // viewSize / 20
 
+
+        LinearGradient frontGradient = new LinearGradient(
+                0, level, 0, viewSize,
+                mFrontWaveStartColor, // 结束颜色
+                mFrontWaveEndColor, // 起始颜色
+                Shader.TileMode.CLAMP
+        );
+
         for (int x1 = 0; x1 < x2; x1++) {
             /*Post wave (Overwrite)*/
             float y1 = (float) (waveLevel * Math.sin(w * x1 + shiftX1) + level);
             canvas.drawLine((float) x1, y1, (float) x1, y2, mWavePaint1);
             /*Build front wave*/
             y1 = (float) (waveLevel * Math.sin(w * x1 + shiftX2) + level);
+            mWavePaint2.setShader(frontGradient);
             canvas.drawLine((float) x1, y1, (float) x1, y2, mWavePaint2);
         }
 
-        mViewPaint.setShader(new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.CLAMP));
+        BitmapShader waveShader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.CLAMP);
+        mViewPaint.setShader(waveShader);
     }
 
     @Override
