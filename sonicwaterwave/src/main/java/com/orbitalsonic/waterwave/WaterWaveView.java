@@ -634,14 +634,13 @@ public class WaterWaveView extends View {
                 mFrontWaveEndColor, // 起始颜色
                 Shader.TileMode.CLAMP
         );
-
+        mWavePaint2.setShader(frontGradient);
         for (int x1 = 0; x1 < x2; x1++) {
             /*Post wave (Overwrite)*/
             float y1 = (float) (waveLevel * Math.sin(w * x1 + shiftX1) + level);
             canvas.drawLine((float) x1, y1, (float) x1, y2, mWavePaint1);
             /*Build front wave*/
             y1 = (float) (waveLevel * Math.sin(w * x1 + shiftX2) + level);
-            mWavePaint2.setShader(frontGradient);
             canvas.drawLine((float) x1, y1, (float) x1, y2, mWavePaint2);
         }
 
