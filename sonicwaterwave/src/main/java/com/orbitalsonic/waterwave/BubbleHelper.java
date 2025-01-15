@@ -12,8 +12,8 @@ import java.util.Random;
 
 public class BubbleHelper {
 
-    public static final int DEFAULT_BUBBLE_MAX_RADIUS = 30;
-    public static final int DEFAULT_BUBBLE_MIN_RADIUS = 5;
+    public static final float DEFAULT_BUBBLE_MAX_RADIUS = 30f;
+    public static final float DEFAULT_BUBBLE_MIN_RADIUS = 5f;
     public static final int DEFAULT_BUBBLE_MAX_SIZE = 30;
     public static final int DEFAULT_BUBBLE_MAX_SPEED_Y = 5;
     public static final int DEFAULT_BUBBLE_ALPHA = 128;
@@ -23,8 +23,8 @@ public class BubbleHelper {
 
     private Random random = new Random();
     private Paint mBubblePaint;                 // 气泡画笔
-    private int mBubbleMaxRadius = 30;          // 气泡最大半径 px
-    private int mBubbleMinRadius = 5;           // 气泡最小半径 px
+    private float mBubbleMaxRadius = DEFAULT_BUBBLE_MAX_RADIUS;          // 气泡最大半径 px
+    private float mBubbleMinRadius = DEFAULT_BUBBLE_MIN_RADIUS;           // 气泡最小半径 px
     private int mBubbleMaxSize = 30;            // 气泡数量
     private int mBubbleMaxSpeedY = 5;           // 气泡速度
     private int mBubbleAlpha = 128;             // 气泡画笔
@@ -35,7 +35,7 @@ public class BubbleHelper {
         this.screenSize = screenSize;
     }
 
-    BubbleHelper(Point screenSize, int bubbleMaxRadius, int bubbleMinRadius, int bubbleMaxSize, int bubbleMaxSpeedY, int bubbleAlpha, int bubbleColor, boolean isShowBubble) {
+    BubbleHelper(Point screenSize, float bubbleMaxRadius, float bubbleMinRadius, int bubbleMaxSize, int bubbleMaxSpeedY, int bubbleAlpha, int bubbleColor, boolean isShowBubble) {
         this.screenSize = screenSize;
         this.mBubbleMaxRadius = bubbleMaxRadius;
         this.mBubbleMinRadius = bubbleMinRadius;
@@ -79,7 +79,11 @@ public class BubbleHelper {
             return;
         }
         Bubble bubble = new Bubble();
-        int radius = random.nextInt(mBubbleMaxRadius - mBubbleMinRadius);
+        int d = (int) (mBubbleMaxRadius - mBubbleMinRadius);
+        if (d <= 1) {
+            d = 1;
+        }
+        int radius = random.nextInt(d);
         radius += mBubbleMinRadius;
         float speedY = random.nextFloat() * mBubbleMaxSpeedY;
         while (speedY < 1) {

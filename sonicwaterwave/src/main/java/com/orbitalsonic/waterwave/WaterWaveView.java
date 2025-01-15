@@ -169,8 +169,8 @@ public class WaterWaveView extends View {
 
         screenSize = new Point(getWidth(), getHeight());
 
-        int bubbleMaxRadius = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleMaxRadius, BubbleHelper.DEFAULT_BUBBLE_MAX_RADIUS);
-        int bubbleMinRadius = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleMinRadius, BubbleHelper.DEFAULT_BUBBLE_MIN_RADIUS);
+        float bubbleMaxRadius = attributes.getDimension(R.styleable.CircularWaterWaveView_bubbleMaxRadius, BubbleHelper.DEFAULT_BUBBLE_MAX_RADIUS);
+        float bubbleMinRadius = attributes.getDimension(R.styleable.CircularWaterWaveView_bubbleMinRadius, BubbleHelper.DEFAULT_BUBBLE_MIN_RADIUS);
         int bubbleMaxSize = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleMaxSize, BubbleHelper.DEFAULT_BUBBLE_MAX_SIZE);
         int bubbleMaxSpeedY = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleMaxSpeedY, BubbleHelper.DEFAULT_BUBBLE_MAX_SPEED_Y);
         int bubbleAlpha = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleAlpha, BubbleHelper.DEFAULT_BUBBLE_ALPHA);
