@@ -35,7 +35,8 @@ public class WaterWaveView extends View {
         SQUARE(6),
         RECTANGLE(7),
         TRIANGLE(8),
-        DIAMOND(9)
+        DIAMOND(9),
+        CUP(10)
         ;
 
         int value;
@@ -109,6 +110,7 @@ public class WaterWaveView extends View {
      * 当前控件的大小
      */
     private Point screenSize = new Point(0, 0);
+    private BubbleHelper mBubbleHelper;
 
     public WaterWaveView(Context context) {
         this(context, null);
@@ -155,13 +157,13 @@ public class WaterWaveView extends View {
         mWavePaint2.setAntiAlias(true);
         //mWavePaint2.setColor(mFrontWaveStartColor);
 
-
         /*Turn on animation thread*/
         thread.start();
         animHandler = new Handler(thread.getLooper());
         uiHandler = new UIHandler(new WeakReference<View>(this));
 
         screenSize = new Point(getWidth(), getHeight());
+        mBubbleHelper = new BubbleHelper(screenSize);
         Message message = Message.obtain(uiHandler);
         message.sendToTarget();
     }
@@ -192,6 +194,7 @@ public class WaterWaveView extends View {
                 public void run() {
                     shiftX1 += waveVector; //Displacement
                     createShader();
+                    mBubbleHelper.refresh();
                     Message message = Message.obtain(uiHandler);
                     message.sendToTarget();
                     if (isAnimation) {
@@ -373,6 +376,7 @@ public class WaterWaveView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         screenSize = new Point(w, h);
+        mBubbleHelper.setScreenSize(screenSize);
         resetShapes();
         if (isAnimation) {
             startAnimation();
@@ -428,10 +432,15 @@ public class WaterWaveView extends View {
             case GLASS:
                 int glassWidth = screenSize.x - (int) mShapePadding;
                 int glassHeight = screenSize.y - (int) mShapePadding;
-                mPathBorder = drawGlassVer1(cx, cy, glassWidth, glassHeight);
-                mPathContent = drawGlassVer1(cx + (int) mBorderWidth, cy + (int) mBorderWidth, glassWidth - 2 * (int) mBorderWidth, glassHeight - 2 * (int) mBorderWidth);
+                mPathBorder = drawGlass(cx, cy, glassWidth, glassHeight);
+                mPathContent = drawGlass(cx + (int) mBorderWidth, cy + (int) mBorderWidth, glassWidth - 2 * (int) mBorderWidth, glassHeight - 2 * (int) mBorderWidth);
                 break;
-
+            case CUP:
+                int glassWidth2 = screenSize.x - (int) mShapePadding;
+                int glassHeight2 = screenSize.y - (int) mShapePadding;
+                mPathBorder = drawCup(cx, cy, glassWidth2, glassHeight2);
+                mPathContent = drawCup(cx + (int) mBorderWidth, cy + (int) mBorderWidth, glassWidth2 - 2 * (int) mBorderWidth, glassHeight2 - 2 * (int) mBorderWidth);
+                break;
         }
 
         createShader();
@@ -554,7 +563,7 @@ public class WaterWaveView extends View {
         return path;
     }
 
-    private Path drawGlassVer1(int cx, int cy, int width, int height) {
+    private Path drawCup(int cx, int cy, int width, int height) {
 
         Path path = new Path();
         path.moveTo(369.072f, 0f);
@@ -685,6 +694,7 @@ public class WaterWaveView extends View {
             canvas.drawText(text, (screenSize.x - textPaint.measureText(text)) / 2.0f, (screenSize.y - textHeight) / 2.0f, textPaint);
 
         }
+        mBubbleHelper.drawBubble(canvas);
     }
 
     private static class UIHandler extends Handler {
@@ -703,4 +713,6 @@ public class WaterWaveView extends View {
             }
         }
     }
+
+
 }

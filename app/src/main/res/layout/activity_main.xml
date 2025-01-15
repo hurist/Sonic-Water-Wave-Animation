@@ -47,6 +47,14 @@
                 />
 
             <Button
+                android:id="@+id/btnCup"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                style="@style/ToggleButtonWithOnlyIcon"
+                app:icon="@drawable/ic_baseline_glass"
+                />
+
+            <Button
                 android:id="@+id/btnHeart"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
