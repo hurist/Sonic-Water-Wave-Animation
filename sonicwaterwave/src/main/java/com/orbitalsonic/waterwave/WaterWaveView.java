@@ -111,6 +111,9 @@ public class WaterWaveView extends View {
      * 当前控件的大小
      */
     private Point screenSize = new Point(0, 0);
+
+    private boolean bubbleEnable = false;
+
     private BubbleHelper mBubbleHelper;
 
     public WaterWaveView(Context context) {
@@ -142,6 +145,7 @@ public class WaterWaveView extends View {
         isAnimation = attributes.getBoolean(R.styleable.CircularWaterWaveView_animatorEnable, DEFAULT_ENABLE_ANIMATION);
         isHideText = attributes.getBoolean(R.styleable.CircularWaterWaveView_textHidden, DEFAULT_HIDE_TEXT);
 
+
         /*Set anti-aliasing & set to "line"*/
         mBorderPaint.setAntiAlias(true);
         mBorderPaint.setStyle(Paint.Style.STROKE);
@@ -164,7 +168,16 @@ public class WaterWaveView extends View {
         uiHandler = new UIHandler(new WeakReference<View>(this));
 
         screenSize = new Point(getWidth(), getHeight());
-        mBubbleHelper = new BubbleHelper(screenSize);
+
+        int bubbleMaxRadius = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleMaxRadius, BubbleHelper.DEFAULT_BUBBLE_MAX_RADIUS);
+        int bubbleMinRadius = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleMinRadius, BubbleHelper.DEFAULT_BUBBLE_MIN_RADIUS);
+        int bubbleMaxSize = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleMaxSize, BubbleHelper.DEFAULT_BUBBLE_MAX_SIZE);
+        int bubbleMaxSpeedY = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleMaxSpeedY, BubbleHelper.DEFAULT_BUBBLE_MAX_SPEED_Y);
+        int bubbleAlpha = attributes.getInt(R.styleable.CircularWaterWaveView_bubbleAlpha, BubbleHelper.DEFAULT_BUBBLE_ALPHA);
+        int bubbleColor = attributes.getColor(R.styleable.CircularWaterWaveView_bubbleColor, Color.WHITE);
+        boolean bubbleEnable = attributes.getBoolean(R.styleable.CircularWaterWaveView_bubbleEnable, true);
+        mBubbleHelper = new BubbleHelper(screenSize, bubbleMaxRadius, bubbleMinRadius, bubbleMaxSize, bubbleMaxSpeedY, bubbleAlpha, bubbleColor, bubbleEnable);
+
         Message message = Message.obtain(uiHandler);
         message.sendToTarget();
     }

@@ -12,6 +12,12 @@ import java.util.Random;
 
 public class BubbleHelper {
 
+    public static final int DEFAULT_BUBBLE_MAX_RADIUS = 30;
+    public static final int DEFAULT_BUBBLE_MIN_RADIUS = 5;
+    public static final int DEFAULT_BUBBLE_MAX_SIZE = 30;
+    public static final int DEFAULT_BUBBLE_MAX_SPEED_Y = 5;
+    public static final int DEFAULT_BUBBLE_ALPHA = 128;
+
     private Point screenSize;
     private ArrayList<Bubble> mBubbles = new ArrayList<>();
 
@@ -22,15 +28,25 @@ public class BubbleHelper {
     private int mBubbleMaxSize = 30;            // 气泡数量
     private int mBubbleMaxSpeedY = 5;           // 气泡速度
     private int mBubbleAlpha = 128;             // 气泡画笔
+    private int mBubbleColor = Color.WHITE;     // 气泡颜色
+    private boolean mIsShowBubble = true;       // 是否显示气泡
 
     public void setScreenSize(Point screenSize) {
         this.screenSize = screenSize;
     }
 
-    BubbleHelper(Point screenSize) {
+    BubbleHelper(Point screenSize, int bubbleMaxRadius, int bubbleMinRadius, int bubbleMaxSize, int bubbleMaxSpeedY, int bubbleAlpha, int bubbleColor, boolean isShowBubble) {
         this.screenSize = screenSize;
+        this.mBubbleMaxRadius = bubbleMaxRadius;
+        this.mBubbleMinRadius = bubbleMinRadius;
+        this.mBubbleMaxSize = bubbleMaxSize;
+        this.mBubbleMaxSpeedY = bubbleMaxSpeedY;
+        this.mBubbleAlpha = bubbleAlpha;
+        this.mBubbleColor = bubbleColor;
+        this.mIsShowBubble = isShowBubble;
+
         mBubblePaint = new Paint();
-        mBubblePaint.setColor(Color.WHITE);
+        mBubblePaint.setColor(mBubbleColor);
         mBubblePaint.setAlpha(mBubbleAlpha);
     }
 
@@ -52,6 +68,9 @@ public class BubbleHelper {
 
     // 尝试创建气泡
     private void tryCreateBubble() {
+        if (!mIsShowBubble) {
+            return;
+        }
         RectF mWaterRectF = new RectF(0, 0, screenSize.x, screenSize.y);
         if (mBubbles.size() >= mBubbleMaxSize) {
             return;
@@ -82,6 +101,9 @@ public class BubbleHelper {
 
     // 刷新气泡位置，对于超出区域的气泡进行移除
     private void refreshBubbles() {
+        if (!mIsShowBubble) {
+            return;
+        }
         RectF mWaterRectF = new RectF(0, 0, screenSize.x, screenSize.y);
         List<Bubble> list = new ArrayList<>(mBubbles);
         for (Bubble bubble : list) {
@@ -104,6 +126,9 @@ public class BubbleHelper {
 
     // 绘制气泡
     void drawBubble(Canvas canvas) {
+        if (!mIsShowBubble) {
+            return;
+        }
         List<Bubble> list = new ArrayList<>(mBubbles);
         for (Bubble bubble : list) {
             if (null == bubble) continue;

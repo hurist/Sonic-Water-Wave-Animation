@@ -26,6 +26,13 @@
     <attr name="animatorEnable" format="boolean" />
     <attr name="textHidden" format="boolean" />
     <attr name="shapePadding" format="dimension" />
+    <attr name="bubbleMaxRadius" format="dimension" />
+    <attr name="bubbleMinRadius" format="dimension" />
+    <attr name="bubbleMaxSize" format="integer" />
+    <attr name="bubbleMaxSpeedY" format="integer" />
+    <attr name="bubbleAlpha" format="integer" />
+    <attr name="bubbleColor" format="color" />
+    <attr name="bubbleEnable" format="boolean" />
 
     <declare-styleable name="CircularWaterWaveView">
         <attr name="progress" />
@@ -42,5 +49,12 @@
         <attr name="shapeType" />
         <attr name="textHidden" />
         <attr name="shapePadding" />
+        <attr name="bubbleMaxRadius" />
+        <attr name="bubbleMinRadius" />
+        <attr name="bubbleMaxSize" />
+        <attr name="bubbleMaxSpeedY" />
+        <attr name="bubbleAlpha" />
+        <attr name="bubbleColor" />
+        <attr name="bubbleEnable" />
     </declare-styleable>
 </resources>
