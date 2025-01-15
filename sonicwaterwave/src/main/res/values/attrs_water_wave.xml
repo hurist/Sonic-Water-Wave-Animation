@@ -11,6 +11,7 @@
         <enum name="triangle" value="8" />
         <enum name="diamond" value="9" />
         <enum name="cup" value="10"/>
+        <enum name="bottle" value="11"/>
     </attr>
     <attr name="progress" format="integer" />
     <attr name="max" format="integer" />

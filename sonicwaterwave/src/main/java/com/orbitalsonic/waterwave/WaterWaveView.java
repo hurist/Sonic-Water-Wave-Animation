@@ -36,7 +36,8 @@ public class WaterWaveView extends View {
         RECTANGLE(7),
         TRIANGLE(8),
         DIAMOND(9),
-        CUP(10)
+        CUP(10),
+        BOTTLE(11)
         ;
 
         int value;
@@ -441,6 +442,11 @@ public class WaterWaveView extends View {
                 mPathBorder = drawCup(cx, cy, glassWidth2, glassHeight2);
                 mPathContent = drawCup(cx + (int) mBorderWidth, cy + (int) mBorderWidth, glassWidth2 - 2 * (int) mBorderWidth, glassHeight2 - 2 * (int) mBorderWidth);
                 break;
+            case BOTTLE:
+                int bottleWidth = screenSize.x - (int) mShapePadding;
+                int bottleHeight = screenSize.y - (int) mShapePadding;
+                mPathBorder = drawBottle(cx, cy, bottleWidth, bottleHeight);
+                mPathContent = drawBottle(cx + (int) mBorderWidth, cy + (int) mBorderWidth, bottleWidth - 2 * (int) mBorderWidth, bottleHeight - 2 * (int) mBorderWidth);
         }
 
         createShader();
@@ -585,6 +591,51 @@ public class WaterWaveView extends View {
         path.lineTo(369.072f, 0f);
         path.close();
 
+
+        RectF validRect = new RectF();
+        validRect.set(
+                cx,
+                cy,
+                cx + width,
+                cy + height
+        );
+
+        RectF pathBounds = new RectF();
+        // 让path强制填充到指定的矩形区域
+        path.computeBounds(pathBounds, true);
+        Matrix matrix = new Matrix();
+        // 计算缩放比例
+        matrix.setRectToRect(pathBounds, validRect, Matrix.ScaleToFit.CENTER); // 映射矩阵
+        path.transform(matrix); // 应用变换
+
+        return path;
+    }
+
+    private Path drawBottle(int cx, int cy, int width, int height) {
+
+        Path path = new Path();
+        path.moveTo(39.1983471f, 32f);
+        path.cubicTo(37.5414929f, 32f, 36.1983471f, 30.6568542f, 36.1983471f, 29f);
+        path.lineTo(36.1983471f, 7f);
+        path.cubicTo(36.1983471f, 3.13400675f, 39.3323539f, 0f, 43.1983471f, 0f);
+        path.lineTo(76.8016529f, 0f);
+        path.cubicTo(80.6676461f, 0f, 83.8016529f, 3.13400675f, 83.8016529f, 7f);
+        path.lineTo(83.8016529f, 29f);
+        path.cubicTo(83.8016529f, 30.6568542f, 82.4585071f, 32f, 80.8016529f, 32f);
+        path.lineTo(78.6538298f, 32f);
+        path.lineTo(78.6538298f, 40.8943853f);
+        path.lineTo(100.693495f, 60.3237903f);
+        path.cubicTo(112.967863f, 71.1444472f, 120f, 86.7182832f, 120f, 103.081251f);
+        path.lineTo(120f, 279f);
+        path.cubicTo(120f, 288.388841f, 112.388841f, 296f, 103f, 296f);
+        path.lineTo(17f, 296f);
+        path.cubicTo(7.61115925f, 296f, 0f, 288.388841f, 0f, 279f);
+        path.lineTo(0f, 103.081251f);
+        path.cubicTo(0f, 86.7182832f, 7.0321375f, 71.1444472f, 19.3065049f, 60.3237903f);
+        path.lineTo(41.3461702f, 40.8943853f);
+        path.lineTo(41.3461702f, 32f);
+        path.lineTo(39.1983471f, 32f);
+        path.close();
 
         RectF validRect = new RectF();
         validRect.set(

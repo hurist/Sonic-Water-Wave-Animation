@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.btnTriangle -> waterWaveView.setShape(WaterWaveView.Shape.TRIANGLE)
                     R.id.btnDiamond -> waterWaveView.setShape(WaterWaveView.Shape.DIAMOND)
                     R.id.btnCup -> waterWaveView.setShape(WaterWaveView.Shape.CUP)
+                    R.id.btnBottle -> waterWaveView.setShape(WaterWaveView.Shape.BOTTLE)
                 }
             } else {
                 if (toggleGroup.checkedButtonId == View.NO_ID) {
